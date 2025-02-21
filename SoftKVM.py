@@ -4,8 +4,10 @@
 import keyboard
 import threading
 
-from Display_OpenCV import Display_OpenCV as OpenCV
-import Window_TK
+from Display_OpenCV import Display_OpenCV as display_opencv
+from Display_pyGame import Display_pyGame as display_pygame
+from Window_TK import Window_TK as window_tk
+from Window_pyGame import Window_pyGame as window_pygame
 
 from time import time as now
    
@@ -54,10 +56,12 @@ class SoftKVMApp:
 if __name__ == '__main__':
     print("[SoftKVM] Starting")
     # create display grabber
-    display = OpenCV()    
+    #display = display_opencv()
+    display = display_pygame()
     # create main window (hidden)
     print("[SoftKVM] Creating main window")
-    window = Window_TK.Window_TK(display)
+    window = window_tk(display)
+    #window = window_pygame(display)
     # start main loop
     SoftKVMApp(window).run()
     print("[SoftKVM] All done")

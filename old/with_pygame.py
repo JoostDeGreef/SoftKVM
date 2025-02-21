@@ -12,7 +12,8 @@ pygame.display.set_caption("SoftKVM")
 #monitor_size = pygame.display.get_desktop_sizes()[0]
 user32 = ctypes.windll.user32
 monitor_size = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
-screen = pygame.display.set_mode(monitor_size, flags=pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN, vsync=True)
+#screen = pygame.display.set_mode(monitor_size, flags=pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN, vsync=True)
+screen = pygame.display.set_mode(monitor_size, flags=pygame.DOUBLEBUF | pygame.FULLSCREEN, vsync=True)
 
 try:
     while True:
@@ -26,6 +27,7 @@ try:
         screen.fill([0,0,0])
         screen.blit(frame, (0,0))
         pygame.display.update()
+        #pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:

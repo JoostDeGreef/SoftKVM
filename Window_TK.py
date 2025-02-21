@@ -1,6 +1,8 @@
 import ctypes
 import cv2
 import PIL.Image, PIL.ImageTk
+import pygame
+import numpy as np
 
 from tkinter import *
 
@@ -35,6 +37,7 @@ class Window_TK(Window_Interface.Window_Interface):
         self.display = None
 
     def run(self):
+        self.update_image_loop()
         self.main.mainloop()
     
     def onClose(self):
@@ -66,14 +69,16 @@ class Window_TK(Window_Interface.Window_Interface):
     def display_frame(self):
         width, height = self.get_size()
         frame = self.display.grab_frame(width, height)
-        
         if not (frame is None):
-            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            image = PIL.Image.fromarray(image)
-            image = PIL.ImageTk.PhotoImage(image)
+            if isinstance(frame, pygame.surface.Surface):                
+                frame = pygame.surfarray.array3d(frame)
+                frame = np.fliplr(frame)
+                frame = np.rot90(frame)
+            frame = PIL.Image.fromarray(frame)
+            frame = PIL.ImageTk.PhotoImage(frame)
         
-            self.panel.configure(image=image)
-            self.panel.image = image 
+            self.panel.configure(image=frame)
+            self.panel.image = frame 
 
     def update_image_loop(self):
         if self.visible or (self.ticks() % 100 == 0):

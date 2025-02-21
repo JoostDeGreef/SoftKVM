@@ -30,6 +30,7 @@ class Display_OpenCV(Display_Interface.Display_Interface):
                 scaleWidth = float(self.width)/float(frame_width)
                 scaleHeight = float(self.height)/float(frame_height)
             
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 frame = cv2.resize(frame,None,fx=scaleWidth,fy=scaleHeight,interpolation=cv2.INTER_CUBIC)
                 return frame
             
