@@ -18,6 +18,7 @@ class Display_Interface(ABC):
     #
     # grab a frame at the desired size
     #
+    # TODO: figure out a nice format of image to return, which both TK and pyGame can handle
     @abstractmethod
     def grab_frame(self, width, height):
         pass

@@ -1,8 +1,14 @@
 # pip install opencv-python
 # pip install keyboard
 # pip install pillow
+
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+
 import keyboard
 import threading
+import argparse
+import sys
 
 from Display_OpenCV import Display_OpenCV as display_opencv
 from Display_pyGame import Display_pyGame as display_pygame
@@ -52,16 +58,49 @@ class SoftKVMApp:
                 case _:
                     self.last_ctrl_press = None
                     self.last_ctrl_press_count = 0
-            
+        else:
+            pass
+
+class MatchChoices(object):
+    def __init__(self, choices):
+        self.choices = choices
+    def __call__(self, choice):
+        for c in self.choices:
+            if c.casefold() == choice.casefold():
+                return c
+        raise argparse.ArgumentTypeError(f"{choice} does not follow the expected pattern ({choices}).")
+        
 if __name__ == '__main__':
-    print("[SoftKVM] Starting")
-    # create display grabber
-    #display = display_opencv()
-    display = display_pygame()
-    # create main window (hidden)
-    print("[SoftKVM] Creating main window")
-    window = window_tk(display)
-    #window = window_pygame(display)
+    parser = argparse.ArgumentParser(
+        prog='SoftKVM',
+        description='A program which mimmicks a KVM in software, by grabbing video using hdmi2usb, and emulating a usb keyboard and mouse using a pi zero2W.',
+        epilog='(C) 2025, Joost de Greef <Joost@stack.nl>')
+    choices=['TK', 'pyGame']
+    parser.add_argument("-d", "--display", choices=choices, type=MatchChoices(choices), default="TK", help="Choose a display framework")
+    choices=['OpenCV', 'pyGame']
+    parser.add_argument("-c", "--camera", choices=choices, type=MatchChoices(choices), default="OpenCV", help="Choose a camera (hdmi2usb) framework")
+    args = parser.parse_args()
+    display = None
+    match args.camera:
+        case 'OpenCV':
+            display = display_opencv()
+        case 'pyGame':
+            display = display_pygame()
+        case _:
+            print("Unsupported 'camera' argument. This is probably a bug")
+            parser.print_help()
+            sys.exit(1)
+    window = None
+    match args.display:
+        case 'TK':
+            window = window_tk(display)
+        case 'PYGAME':
+            window = window_tk(display)
+        case _:
+            print("Unsupported 'display' argument. This is probably a bug")
+            parser.print_help()
+            sys.exit(1)
+            
     # start main loop
     SoftKVMApp(window).run()
     print("[SoftKVM] All done")
