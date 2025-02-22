@@ -3,7 +3,6 @@ from pygame.locals import *
 import Window_Interface
 import cv2
 import numpy as np
-import os
 
 class Window_pyGame(Window_Interface.Window_Interface):
     #  
@@ -11,8 +10,6 @@ class Window_pyGame(Window_Interface.Window_Interface):
     #
     def __init__(self, display):
         self.display = display
-        # make pyGame (SDL) behave better when desktop scaling enabled
-        os.environ["SDL_WINDOWS_DPI_AWARENESS"] = "permonitorv2"
         pygame.init()
         pygame.display.set_caption("SoftKVM")
         self.clock = pygame.time.Clock()
