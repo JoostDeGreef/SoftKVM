@@ -2,8 +2,6 @@ import pygame
 from pygame.locals import *
 import Display_Interface
 import Window_Interface
-import cv2
-import numpy as np
 
 class Window_pyGame(Window_Interface.Window_Interface):
     #  
@@ -22,13 +20,11 @@ class Window_pyGame(Window_Interface.Window_Interface):
     # Destroy the window
     #
     def __del__(self):
-        pass
+        self.display = None
 
     def get_size(self):
         infoObject = pygame.display.Info()
         return infoObject.current_w, infoObject.current_h
-        # width, height = pygame.display.get_desktop_sizes()[0]
-        # return width, height
 
     #
     # Start the window main loop
@@ -40,11 +36,6 @@ class Window_pyGame(Window_Interface.Window_Interface):
                 frame = self.display.grab_frame(width, height, Display_Interface.Origin_LB)
                 if not (frame is None):
                     self.screen.fill([0,0,0])
-                    # if not isinstance(frame, pygame.surface.Surface):
-                    #     frame = np.fliplr(frame)
-                    #     frame = np.rot90(frame)
-                    # else:
-                    #     self.screen.blit(frame, (0,0))
                     pygame.surfarray.blit_array(self.screen,frame)   
                     pygame.display.flip()
             for event in pygame.event.get():
