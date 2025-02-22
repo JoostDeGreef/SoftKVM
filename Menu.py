@@ -9,13 +9,19 @@ class Menu:
             case 'About':
                 if self._on_about:
                     self._on_about()
+            case 'Switch':
+                if self._on_switch:
+                    self._on_switch()
             case 'Exit':
                 if self._on_exit:
                     self._on_exit()
     
-    def __init__(self, on_exit = None, on_about = None):
+    def __init__(self, on_exit = None, on_about = None, on_switch = None):
         image = self._create_image(64, 64)
         menu = pystray.Menu(
+            pystray.MenuItem(
+                'Switch',
+                self._on_clicked),
             pystray.MenuItem(
                 'About',
                 self._on_clicked),
@@ -29,6 +35,7 @@ class Menu:
             menu=menu)
         self._on_exit = on_exit
         self._on_about = on_about
+        self._on_switch = on_switch
         self._thread = None
      
     def __del__(self):

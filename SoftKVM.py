@@ -21,7 +21,7 @@ class SoftKVMApp:
         self.last_ctrl_press = None
         self.last_ctrl_press_count = 0
         self.window = window(display)
-        self.menu = Menu.Menu(on_exit=self.close, on_about=self.about)
+        self.menu = Menu.Menu(on_exit=self.close, on_about=self.about, on_switch=self.switch)
 
     def __del__(self):
         self.menu = None
@@ -39,6 +39,9 @@ class SoftKVMApp:
 
     def about(self):
         webbrowser.open('https://www.clickets.nl/', new=2, autoraise=True)
+    
+    def switch(self):
+        self.window.toggle()
     
     def close(self):
         self.window.hide()
