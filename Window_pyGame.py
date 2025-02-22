@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import Display_Interface
 import Window_Interface
 import cv2
 import numpy as np
@@ -9,12 +10,12 @@ class Window_pyGame(Window_Interface.Window_Interface):
     # Create window in hidden state
     #
     def __init__(self, display):
-        self.display = display
         pygame.init()
         pygame.display.set_caption("SoftKVM")
         self.clock = pygame.time.Clock()
         # pygame.display.set_icon()
         width, height = self.get_size()
+        self.display = display(width, height)
         self.screen = pygame.display.set_mode([width, height], flags=pygame.DOUBLEBUF | pygame.FULLSCREEN | pygame.HIDDEN, vsync=True)
     
     #
@@ -32,19 +33,19 @@ class Window_pyGame(Window_Interface.Window_Interface):
     #
     # Start the window main loop
     #
-    def run(self):
+    def run(self): 
         while True:
             if pygame.display.get_active():
                 width, height = self.get_size()            
-                frame = self.display.grab_frame(width, height)
+                frame = self.display.grab_frame(width, height, Display_Interface.Origin_LB)
                 if not (frame is None):
                     self.screen.fill([0,0,0])
-                    if not isinstance(frame, pygame.surface.Surface):
-                        frame = np.fliplr(frame)
-                        frame = np.rot90(frame)
-                        pygame.surfarray.blit_array(self.screen,frame)   
-                    else:
-                        self.screen.blit(frame, (0,0))
+                    # if not isinstance(frame, pygame.surface.Surface):
+                    #     frame = np.fliplr(frame)
+                    #     frame = np.rot90(frame)
+                    # else:
+                    #     self.screen.blit(frame, (0,0))
+                    pygame.surfarray.blit_array(self.screen,frame)   
                     pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

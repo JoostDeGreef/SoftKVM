@@ -87,12 +87,20 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--camera", choices=choices, type=MatchChoices(choices), default="OpenCV", help="Choose a camera (hdmi2usb) framework")
     parser.add_argument("-a", "--address", type=MatchIP(), default="127.0.0.1", help="IP address for the SoftKMV-pi")
     args = parser.parse_args()
+    
+    #debug settings
+    args.camera = 'OpenCV'
+    #args.camera = 'pyGame'
+    args.display = 'TK'
+    #args.display = 'pyGame'
+    args.address = '192.168.1.76'
+
     display = None
     match args.camera:
         case 'OpenCV':
-            display = display_opencv()
+            display = display_opencv
         case 'pyGame':
-            display = display_pygame()
+            display = display_pygame
         case _:
             print("Unsupported 'camera' argument. This is probably a bug")
             parser.print_help()
@@ -101,7 +109,7 @@ if __name__ == '__main__':
     match args.display:
         case 'TK':
             window = window_tk(display)
-        case 'PYGAME':
+        case 'pyGame':
             window = window_tk(display)
         case _:
             print("Unsupported 'display' argument. This is probably a bug")

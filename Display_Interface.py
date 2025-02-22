@@ -1,11 +1,14 @@
 from abc import ABC, abstractmethod
 
+Origin_LT = 1 # left top
+Origin_LB = 2 # left bottom
+
 class Display_Interface(ABC):
     #  
     # initialize display grabber
     #
     @abstractmethod
-    def __init__(self):
+    def __init__(self, width, height):
         pass
      
     #
@@ -17,8 +20,9 @@ class Display_Interface(ABC):
     
     #
     # grab a frame at the desired size
-    #
-    # TODO: figure out a nice format of image to return, which both TK and pyGame can handle
+    # 
+    # return np.ndarray with the image in the desired orientation
+    # 
     @abstractmethod
-    def grab_frame(self, width, height):
+    def grab_frame(self, width, height, origin=Origin_LT):
         pass

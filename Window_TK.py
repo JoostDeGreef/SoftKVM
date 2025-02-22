@@ -2,22 +2,21 @@ import ctypes
 import cv2
 import PIL.Image, PIL.ImageTk
 import pygame
-import numpy as np
 
 from tkinter import *
 
 import Display_Interface
-import Display_OpenCV
 import Window_Interface
-import Window_TK
 import Ticker
 
 class Window_TK(Window_Interface.Window_Interface):
     def __init__(self, display):
-        self.display = display
         # access to windows system functions
         print("[SoftKVM] Loading user32")
         self.user32 = ctypes.windll.user32
+        # initialize the 'camera'
+        width, height = self.get_size()
+        self.display = display(width, height)
         # update ticker
         self.ticks = Ticker.Ticker()
         # create root window
@@ -37,7 +36,7 @@ class Window_TK(Window_Interface.Window_Interface):
         self.display = None
 
     def run(self):
-        self.update_image_loop()
+        self.main.after(10, self.update_image_loop)
         self.main.mainloop()
     
     def onClose(self):
@@ -48,7 +47,6 @@ class Window_TK(Window_Interface.Window_Interface):
 
     def show(self):
         self.visible = True
-        self.display_frame()
         self.main.deiconify()
  
     def hide(self):
@@ -68,12 +66,8 @@ class Window_TK(Window_Interface.Window_Interface):
 
     def display_frame(self):
         width, height = self.get_size()
-        frame = self.display.grab_frame(width, height)
+        frame = self.display.grab_frame(width, height, Display_Interface.Origin_LT)
         if not (frame is None):
-            if isinstance(frame, pygame.surface.Surface):                
-                frame = pygame.surfarray.array3d(frame)
-                frame = np.fliplr(frame)
-                frame = np.rot90(frame)
             frame = PIL.Image.fromarray(frame)
             frame = PIL.ImageTk.PhotoImage(frame)
         
