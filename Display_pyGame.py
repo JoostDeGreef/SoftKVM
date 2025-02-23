@@ -32,10 +32,12 @@ class Display_pyGame(Display_Interface.Display_Interface):
             self.cam.start()
             self.width, self.height = [width, height]
         frame = self.cam.get_image()
-        frame = pygame.transform.scale(frame, (width, height))
-        frame = pygame.surfarray.array3d(frame)
+        size = (width, height)
         if origin == Display_Interface.Origin_LT:
-            frame = np.fliplr(frame)
-            frame = np.rot90(frame)
+            frame = pygame.transform.flip(frame,1,0)
+            frame = pygame.transform.rotate(frame,90)
+            size = (height, width)
+        frame = pygame.transform.smoothscale(frame, size)
+        frame = pygame.surfarray.array3d(frame)
         return frame
 

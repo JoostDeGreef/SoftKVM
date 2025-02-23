@@ -28,18 +28,20 @@ class Display_OpenCV(Display_Interface.Display_Interface):
             ret, frame = self.video_capture.read()
 
             if ret:
-                frame_height, frame_width, _ = frame.shape
+                # frame_height, frame_width, _ = frame.shape
 
-                scaleWidth = float(self.width)/float(frame_width)
-                scaleHeight = float(self.height)/float(frame_height)
+                # scaleWidth = float(self.width)/float(frame_width)
+                # scaleHeight = float(self.height)/float(frame_height)
             
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                
+                size = [width, height]
                 if origin == Display_Interface.Origin_LB:
                     frame = np.fliplr(frame)
                     frame = np.rot90(frame)
+                    size = [height, width]
 
-                frame = cv2.resize(frame,None,fx=scaleWidth,fy=scaleHeight,interpolation=cv2.INTER_CUBIC)
+                frame = cv2.resize(frame,size,interpolation=cv2.INTER_CUBIC)
+                
                 return frame
             
             return None

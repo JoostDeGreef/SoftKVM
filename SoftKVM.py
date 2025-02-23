@@ -1,6 +1,5 @@
 import Setup # Has to be the first! This will update environment settings other modules use.
 
-import keyboard
 import threading
 import argparse
 import sys
@@ -12,30 +11,28 @@ from Display_pyGame import Display_pyGame as display_pygame
 from Window_TK import Window_TK as window_tk
 from Window_pyGame import Window_pyGame as window_pygame
 import Menu
-
-from time import time as now
-   
+from KeyboardHandler import KeyboardHandler as keyboard
+ 
 class SoftKVMApp:
     def __init__(self, window, display):
-        # variables for keyboard_hook
-        self.last_ctrl_press = None
-        self.last_ctrl_press_count = 0
         self.window = window(display)
         self.menu = Menu.Menu(on_exit=self.close, on_about=self.about, on_switch=self.switch)
-
+        self.keyboard = keyboard(on_close=self.close, on_switch=self.switch)
+        
     def __del__(self):
         self.menu = None
         self.window = None
+        self.keyboard = None
         
     def run(self):
         print("[SoftKVM] setting keyboard hook")
-        keyboard.hook(self.keyboard_hook, False)
+        self.keyboard.start()
         print("[SoftKVM] Started!")
         self.menu.start()
         self.window.run() # this is a blocking main loop
         print("[SoftKVM] Closing down")
         self.menu.stop()
-        keyboard.unhook_all()
+        self.keyboard.stop()
 
     def about(self):
         webbrowser.open('https://www.clickets.nl/', new=2, autoraise=True)
@@ -47,30 +44,6 @@ class SoftKVMApp:
         self.window.hide()
         self.window.destroy()
        
-    def keyboard_hook(self, event):
-        if event.event_type == 'up':
-            match event.name:
-                case 'ctrl':
-                    if self.last_ctrl_press_count == 0:
-                        self.last_ctrl_press = now()
-                        self.last_ctrl_press_count = 1
-                    elif now() - self.last_ctrl_press < 500:
-                        self.last_ctrl_press_count = self.last_ctrl_press_count + 1
-                        if self.last_ctrl_press_count >= 3:
-                            self.window.toggle()
-                            self.last_ctrl_press = None
-                            self.last_ctrl_press_count = 0
-                    else:
-                        self.last_ctrl_press = now()
-                        self.last_ctrl_press_count = 1
-                case 'esc':
-                    self.close()
-                case _:
-                    self.last_ctrl_press = None
-                    self.last_ctrl_press_count = 0
-        else:
-            pass
-
 class MatchChoices(object):
     def __init__(self, choices):
         self.choices = choices
@@ -100,9 +73,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     #debug settings
-    #args.camera = 'OpenCV'
+    args.camera = 'OpenCV'
     #args.camera = 'pyGame'
-    #args.display = 'TK'
+    args.display = 'TK'
     #args.display = 'pyGame'
     #args.address = '192.168.1.76'
 
@@ -121,7 +94,7 @@ if __name__ == '__main__':
         case 'TK':
             window = window_tk
         case 'pyGame':
-            window = window_tk
+            window = window_pygame
         case _:
             print("Unsupported 'display' argument. This is probably a bug")
             parser.print_help()
