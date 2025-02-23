@@ -12,26 +12,31 @@ from Window_TK import Window_TK as window_tk
 from Window_pyGame import Window_pyGame as window_pygame
 import Menu
 from KeyboardHandler import KeyboardHandler as keyboard
+from MouseHandler import MouseHandler as mouse
  
 class SoftKVMApp:
     def __init__(self, window, display):
         self.window = window(display)
         self.menu = Menu.Menu(on_exit=self.close, on_about=self.about, on_switch=self.switch)
         self.keyboard = keyboard(on_close=self.close, on_switch=self.switch)
+        self.mouse = mouse()
         
     def __del__(self):
         self.menu = None
         self.window = None
         self.keyboard = None
+        self.mouse = None
         
     def run(self):
         print("[SoftKVM] setting keyboard hook")
         self.keyboard.start()
+        self.mouse.start()
         print("[SoftKVM] Started!")
         self.menu.start()
         self.window.run() # this is a blocking main loop
         print("[SoftKVM] Closing down")
         self.menu.stop()
+        self.mouse.stop()
         self.keyboard.stop()
 
     def about(self):
@@ -39,6 +44,8 @@ class SoftKVMApp:
     
     def switch(self):
         self.window.toggle()
+        self.keyboard.forward_to_remote = self.window.is_visible()
+        self.mouse.forward_to_remote = self.window.is_visible()
     
     def close(self):
         self.window.hide()
@@ -73,10 +80,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     #debug settings
-    args.camera = 'OpenCV'
+    #args.camera = 'OpenCV'
     #args.camera = 'pyGame'
-    args.display = 'TK'
-    #args.display = 'pyGame'
+    #args.display = 'TK'
+    args.display = 'pyGame'
     #args.address = '192.168.1.76'
 
     display = None

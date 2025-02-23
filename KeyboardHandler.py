@@ -8,6 +8,8 @@ class KeyboardHandler():
         self._last_ctrl_press_count = 0
         self._on_close = on_close
         self._on_switch = on_switch
+        self._key_press_delta = 300
+        self.forward_to_remote = False;
     
     def __del__(self):
         pass
@@ -25,7 +27,7 @@ class KeyboardHandler():
                     if self._last_ctrl_press_count == 0:
                         self._last_ctrl_press = now()
                         self._last_ctrl_press_count = 1
-                    elif now() - self._last_ctrl_press < 500:
+                    elif now() - self._last_ctrl_press < self._key_press_delta:
                         self._last_ctrl_press_count = self._last_ctrl_press_count + 1
                         if self._last_ctrl_press_count >= 3:
                             if self._on_switch:
@@ -36,7 +38,7 @@ class KeyboardHandler():
                         self._last_ctrl_press = now()
                         self._last_ctrl_press_count = 1
                 case 'esc':
-                    if self._last_ctrl_press_count >= 2 and now() - self._last_ctrl_press < 500:
+                    if self._last_ctrl_press_count >= 2 and now() - self._last_ctrl_press < self._key_press_delta:
                         if self._on_close:
                             self._on_close()
                     self._last_ctrl_press = None
@@ -44,5 +46,11 @@ class KeyboardHandler():
                 case _:
                     self._last_ctrl_press = None
                     self._last_ctrl_press_count = 0
+                    self._send_keystroke_to_remote(event)
         else:
-            pass
+            self._send_keystroke_to_remote(event)
+
+    def _send_keystroke_to_remote(self, event):
+        if self.forward_to_remote:
+            print("{} {} {}".format(event.event_type, event.name, event.scan_code))
+    

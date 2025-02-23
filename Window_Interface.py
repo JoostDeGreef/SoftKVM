@@ -49,3 +49,10 @@ class Window_Interface(ABC):
     @abstractmethod
     def toggle(self):
         pass
+
+    #
+    # Report window visibility
+    #
+    @abstractmethod
+    def is_visible(self):
+        pass

@@ -43,13 +43,18 @@ class Window_pyGame(Window_Interface.Window_Interface):
                     return
                 elif event.type == pygame.SHOWN:
                     width, height = self.get_size()
+                    pygame.mouse.set_visible(False)
                     self.screen = pygame.display.set_mode([width, height], flags=pygame.DOUBLEBUF | pygame.FULLSCREEN | pygame.SHOWN, vsync=True)
                 elif event.type == pygame.HIDDEN:
                     width, height = self.get_size()
+                    pygame.mouse.set_visible(True)
                     self.screen = pygame.display.set_mode([width, height], flags=pygame.DOUBLEBUF | pygame.FULLSCREEN | pygame.HIDDEN, vsync=True)
 
             self.clock.tick(10)
        
+    def is_visible(self):
+        return pygame.display.get_active()
+
     #
     # Stop the window main loop
     #

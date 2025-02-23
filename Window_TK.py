@@ -27,6 +27,7 @@ class Window_TK(Window_Interface.Window_Interface):
         self.main.wm_attributes('-topmost', 'true')
         self.main.wm_attributes('-fullscreen','true')
         self.main.wm_protocol("WM_DELETE_WINDOW", self.onClose)
+        self.main.config(cursor="none")
         # create panel with video output
         self.panel = Label(self.main, highlightthickness=0)
         self.panel.image = None
@@ -78,3 +79,6 @@ class Window_TK(Window_Interface.Window_Interface):
         if self.visible or (self.ticks() % 100 == 0):
             self.display_frame()
         self.main.after(10, self.update_image_loop)
+
+    def is_visible(self):
+        return self.visible
